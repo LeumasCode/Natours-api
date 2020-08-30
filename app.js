@@ -18,11 +18,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-});
-
 // route handler
 
 app.use('/api/v1/tours', tourRouter);
