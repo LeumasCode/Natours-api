@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -10,15 +11,10 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const user = await User.find();
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
 
 exports.updateProfile = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs Password data
@@ -50,30 +46,17 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'err',
-    message: 'Route not yet ready',
-  });
-};
-
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'err',
-    message: 'Route not yet ready',
+    message: 'Route not yet ready! Please use /signup instead',
   });
 };
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'err',
-    message: 'Route not yet ready',
-  });
-};
+exports.getUser = factory.getOne(User);
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'err',
-    message: 'Route not yet ready',
-  });
-};
+exports.getAllUsers = factory.getAll(User);
+// DO NOT UPDATE PASSWORD WITH THIS
+exports.updateUser = factory.updateOne(User);
+
+exports.deleteUser = factory.deleteOne(User);

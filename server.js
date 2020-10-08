@@ -20,6 +20,7 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: false,
+    useFindAndModify: false,
   })
   .then(() => console.log('Db connected'));
 
