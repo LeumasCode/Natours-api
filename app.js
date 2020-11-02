@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -8,6 +9,7 @@ const hpp = require('hpp');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorControllers');
 
@@ -19,6 +21,9 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: 'Too many request from this IP, Please try again in an hour',
 });
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 app.use('/api', limiter);
 
@@ -65,7 +70,7 @@ app.use((req, res, next) => {
 });
 
 // route handler
-
+app.use('/', viewRouter)
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/Users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
