@@ -1,4 +1,5 @@
 const express = require('express');
+
 const {
   signup,
   login,
@@ -18,6 +19,8 @@ const {
   updateProfile,
   deleteMe,
   getMe,
+  uploadUserPhoto,
+  resizeUserPhoto,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -33,7 +36,7 @@ router.use(protect);
 
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateProfile);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateProfile);
 router.delete('/deleteMe', deleteMe);
 
 // restricted to only admin after this middleware
