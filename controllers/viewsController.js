@@ -1,5 +1,6 @@
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError.js');
 
@@ -28,10 +29,16 @@ exports.getTour = catchAsync(async (req, res, next) => {
   }
   // 3) Render template using data from 1)
 
-  res.status(200).render('tour', {
-    title: `${tour.name} Tour`,
-    tour,
-  });
+  res
+    .status(200)
+    .set(
+      'Content-Security-Policy',
+      'connect-src https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com'
+    )
+    .render('tour', {
+      title: `${tour.name} Tour`,
+      tour,
+    });
 });
 
 exports.getLoginForm = catchAsync(async (req, res, next) => {
@@ -45,6 +52,22 @@ exports.getAccount = (req, res) => {
     title: 'Your account',
   });
 };
+
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  // 1) find all bookings
+  const bookings = await Booking.find({ user: req.user.id });
+
+  // 2.  Find tours with the returned IDs
+  const tourIDs = bookings.map((el) => el.tour);
+
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+  //
+
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
+  });
+});
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const { name, email } = req.body;

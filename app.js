@@ -56,7 +56,7 @@ app.use(
 );
 
 // set security HTTP Header
-app.use(helmet());
+
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -64,10 +64,11 @@ app.use(
       baseUri: ["'self'"],
       fontSrc: ["'self'", 'https:', 'http:', 'data:'],
       scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
-      styleSrc: ["'self'", 'https:', 'http:', "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https:', 'http:'],
     },
   })
 );
+
 // Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
